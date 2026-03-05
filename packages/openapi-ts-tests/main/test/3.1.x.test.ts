@@ -245,6 +245,14 @@ describe(`OpenAPI ${version}`, () => {
     },
     {
       config: createConfig({
+        input: 'discriminator-allof-inline.json',
+        output: 'discriminator-allof-inline',
+      }),
+      description:
+        'handles allOf where inline schema discriminator mapping should take priority over $ref discriminator fallback',
+    },
+    {
+      config: createConfig({
         input: 'discriminator-non-string.yaml',
         output: 'discriminator-non-string',
       }),
@@ -934,6 +942,23 @@ describe(`OpenAPI ${version}`, () => {
         ],
       }),
       description: 'generates validator schemas with metadata',
+    },
+    {
+      config: createConfig({
+        input: 'validators.yaml',
+        output: 'validators-metadata-fn',
+        plugins: [
+          {
+            metadata: ({ $, node, schema }) => {
+              node
+                .prop('custom', $.literal('value'))
+                .prop('title', $.literal(schema.description ?? schema.type ?? ''));
+            },
+            name: 'valibot',
+          },
+        ],
+      }),
+      description: 'generates validator schemas with metadata function',
     },
     {
       config: createConfig({
