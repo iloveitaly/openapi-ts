@@ -1,14 +1,13 @@
 import type { SchemaWithType } from '@hey-api/shared';
 
-import type { TypeTsDsl } from '../../../../../ts-dsl';
 import { $ } from '../../../../../ts-dsl';
-import type { IrSchemaToAstOptions } from '../../shared/types';
+import type { HeyApiTypeScriptPlugin, Type } from '../../shared/types';
 
 export function unknownToAst({
   plugin,
-}: IrSchemaToAstOptions & {
+}: {
+  plugin: HeyApiTypeScriptPlugin['Instance'];
   schema: SchemaWithType<'unknown'>;
-}): TypeTsDsl {
-  const node = $.type(plugin.config.topType);
-  return node;
+}): Type {
+  return $.type(plugin.config.topType);
 }
