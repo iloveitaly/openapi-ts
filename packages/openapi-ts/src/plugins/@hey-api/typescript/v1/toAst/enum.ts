@@ -2,15 +2,16 @@ import type { SchemaWithType } from '@hey-api/shared';
 
 import { $ } from '../../../../../ts-dsl';
 import type { EnumResolverContext } from '../../resolvers';
-import type { HeyApiTypeScriptPlugin, Type } from '../../shared/types';
+import type { Type } from '../../shared/types';
 import type { TypeScriptEnumData } from '../../shared/types';
+import type { HeyApiTypeScriptPlugin } from '../../types';
 
 function buildEnumData(
   plugin: HeyApiTypeScriptPlugin['Instance'],
   schema: SchemaWithType<'enum'>,
 ): TypeScriptEnumData | undefined {
   if (!plugin.config.enums.enabled) {
-    return undefined;
+    return;
   }
 
   const items = schema.items ?? [];

@@ -85,8 +85,7 @@ export function createVisitor(
       };
     },
     enum(schema, ctx) {
-      const mode = ctx.plugin.config.enums ?? 'enum';
-      const result = enumToType({ mode, plugin: ctx.plugin, schema });
+      const result = enumToType({ plugin: ctx.plugin, schema });
       return {
         ...result,
         meta: defaultMeta(schema),
@@ -241,6 +240,7 @@ export function createVisitor(
         childResults: items,
         parentSchema,
         plugin: ctx.plugin,
+        schemas,
       });
 
       return {
