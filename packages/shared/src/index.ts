@@ -103,11 +103,12 @@ export type {
   OpenApiResponseObject,
   OpenApiSchemaObject,
 } from './openApi/types';
-export type { Hooks } from './parser/hooks';
+export type { GetNameContext, Hooks } from './parser/hooks';
 export type { SchemaWithType } from './plugins/shared/types/schema';
 export { definePluginConfig, mappers } from './plugins/shared/utils/config';
 export type { PluginInstanceTypes } from './plugins/shared/utils/instance';
 export { PluginInstance } from './plugins/shared/utils/instance';
+export { buildSymbolIn } from './plugins/symbol';
 export type {
   AnyPluginName,
   DefinePlugin,
@@ -116,7 +117,7 @@ export type {
   PluginContext,
   PluginNames,
 } from './plugins/types';
-export { findPackageJson, findTsConfigPath, loadPackageJson, loadTsConfig } from './tsConfig';
+export { findPackageJson, findTsConfigPath, loadPackageJson } from './tsConfig';
 export type { Logs } from './types/logs';
 export type { WatchValues } from './types/watch';
 export { escapeComment } from './utils/escape';
