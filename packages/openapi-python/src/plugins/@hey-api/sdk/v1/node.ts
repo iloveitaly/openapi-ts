@@ -72,7 +72,7 @@ function childToNode(
   const cachedProp = plugin.external('functools.cached_property');
 
   return [
-    $.func(memberName)
+    $.method(memberName)
       .decorator(cachedProp)
       .param('self')
       .returns(refChild)
@@ -133,18 +133,16 @@ function implementFn<T extends ReturnType<typeof $.func>>(args: {
       fieldsList.element(fieldDict);
     }
 
-    const kwargs: Array<ReturnType<typeof $.kwarg>> = [];
-    for (const name of paramNames) {
-      kwargs.push($.kwarg(name, name));
-    }
-
     return (
       node
         .params(...opParameters.parameters)
         // TODO: extract operation statements into a separate function
         .do(
           $.var('params').assign(
-            $(plugin.external('client.build_client_params')).call(fieldsList, ...kwargs),
+            $(plugin.external('client.build_client_params')).call(
+              fieldsList,
+              ...paramNames.map((name) => $.kwarg(name, name)),
+            ),
           ),
         )
         .do(
@@ -198,7 +196,7 @@ export function toNode(
     } else {
       if (index > 0 || node.hasBody) node.newline();
       const method = implementFn({
-        node: $.func(createFnSymbol(plugin, item), (m) =>
+        node: $.method(createFnSymbol(plugin, item), (m) =>
           attachComment({
             node: m,
             operation,

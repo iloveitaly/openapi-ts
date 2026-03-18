@@ -1,6 +1,7 @@
-import type { AnalysisContext, Node, NodeName } from '@hey-api/codegen-core';
+import type { AnalysisContext, Node, NodeName, Ref } from '@hey-api/codegen-core';
+import { ref } from '@hey-api/codegen-core';
 
-import type { py } from '../../ts-python';
+import type { py } from '../../py-compiler';
 import type { BaseCtor, MixinCtor } from './types';
 
 export interface ReturnsMethods extends Node {
@@ -10,7 +11,7 @@ export interface ReturnsMethods extends Node {
 
 export function ReturnsMixin<T extends py.Node, TBase extends BaseCtor<T>>(Base: TBase) {
   abstract class Returns extends Base {
-    protected _returns?: NodeName | py.Expression;
+    protected _returns?: Ref<NodeName | py.Expression>;
 
     override analyze(ctx: AnalysisContext): void {
       super.analyze(ctx);
@@ -18,7 +19,7 @@ export function ReturnsMixin<T extends py.Node, TBase extends BaseCtor<T>>(Base:
     }
 
     returns(type: NodeName | py.Expression): this {
-      this._returns = type;
+      this._returns = ref(type);
       return this;
     }
 
