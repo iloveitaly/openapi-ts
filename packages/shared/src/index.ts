@@ -23,6 +23,7 @@ export type {
   FeatureToggle,
   IndexExportOption,
   NamingOptions,
+  ResolveModuleFn,
   UserCommentsOption,
   UserIndexExportOption,
 } from './config/shared';
