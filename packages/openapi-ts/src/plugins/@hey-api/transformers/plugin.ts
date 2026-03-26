@@ -202,10 +202,24 @@ function processSchemaType({
       });
 
       if (entryValueNodes.length) {
+        const properties = Object.keys(schema.properties ?? {});
         nodes.push(
           $.for($.const('key'))
             .of($('Object').attr('keys').call(dataExpression))
-            .do(...entryValueNodes),
+            .$if(
+              properties.length,
+              (f) =>
+                f.do(
+                  $.if(
+                    $.not(
+                      $.array(...properties)
+                        .attr('includes')
+                        .call('key'),
+                    ),
+                  ).do(...entryValueNodes),
+                ),
+              (f) => f.do(...entryValueNodes),
+            ),
         );
       }
     }
@@ -336,7 +350,7 @@ export const handler: HeyApiTransformersPlugin['Handler'] = ({ plugin }) => {
       });
       if (!nodes.length) return;
 
-      // For nullable union responses (e.g. anyOf: [SomeSchema, null]), wrap the
+      // For nullable union responses (e.g., anyOf: [SomeSchema, null]), wrap the
       // transformation in a null guard so that null data is returned as-is.
       // We require nodes.length >= 2 because we need at least one transformation
       // statement AND a return statement (empty .do() would fail validation).
