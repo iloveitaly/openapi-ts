@@ -63,7 +63,7 @@
     "@hey-api/openapi-ts": "workspace:*",
     "@types/node": "24.12.2",
     "@typescript-eslint/eslint-plugin": "8.54.0",
-    "@typescript/native-preview": "7.0.0-dev.20260409.1",
+    "@typescript/native-preview": "7.0.0-dev.20260411.1",
     "@vitest/coverage-v8": "4.1.0",
     "eslint": "9.39.2",
     "eslint-plugin-simple-import-sort": "12.1.1",
@@ -78,7 +78,7 @@
     "publint": "0.3.18",
     "tsdown": "0.21.7",
     "tsx": "4.21.0",
-    "turbo": "2.9.3",
+    "turbo": "2.9.6",
     "typescript": "6.0.2",
     "typescript-eslint": "8.54.0",
     "vitest": "4.1.0"
