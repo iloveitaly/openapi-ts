@@ -1,3 +1,4 @@
+import type { IProjectMeta } from '../extensions';
 import { isNodeRef, isSymbolRef } from '../guards';
 import type { INode, NodeRelationship } from '../nodes/node';
 import { fromRef, isRef, ref } from '../refs/refs';
@@ -8,19 +9,22 @@ import { createScope, registerChildName } from './scope';
 import type { IAnalysisContext, Input } from './types';
 
 export class AnalysisContext implements IAnalysisContext {
+  /** Arbitrary project metadata. */
+  private meta: IProjectMeta;
   /**
    * Stack of parent nodes during analysis.
    *
    * The top of the stack is the current semantic container.
    */
-  private _parentStack: Array<INode> = [];
+  private parentStack: Array<INode> = [];
 
   scope: Scope;
   scopes: Scope = createScope();
   symbol?: Symbol;
 
-  constructor(node: INode) {
-    this._parentStack.push(node);
+  constructor(node: INode, meta: IProjectMeta) {
+    this.parentStack.push(node);
+    this.meta = meta;
     this.scope = this.scopes;
     this.symbol = node.symbol;
   }
@@ -29,7 +33,7 @@ export class AnalysisContext implements IAnalysisContext {
    * Get the current semantic parent (top of stack).
    */
   get currentParent(): INode | undefined {
-    return this._parentStack[this._parentStack.length - 1];
+    return this.parentStack[this.parentStack.length - 1];
   }
 
   /**
@@ -69,6 +73,7 @@ export class AnalysisContext implements IAnalysisContext {
       const node = fromRef(value);
       this.addChild(node, 'container');
       this.pushParent(node);
+      node.meta = this.meta[node.language] ?? {};
       node.analyze(this);
       this.popParent();
     }
@@ -112,7 +117,7 @@ export class AnalysisContext implements IAnalysisContext {
    * Call this when exiting a container node.
    */
   popParent(): void {
-    this._parentStack.pop();
+    this.parentStack.pop();
   }
 
   popScope(): void {
@@ -123,7 +128,7 @@ export class AnalysisContext implements IAnalysisContext {
    * Push a node as the current semantic parent.
    */
   pushParent(node: INode): void {
-    this._parentStack.push(node);
+    this.parentStack.push(node);
   }
 
   pushScope(): void {
@@ -149,14 +154,20 @@ export class AnalysisContext implements IAnalysisContext {
 }
 
 export class Analyzer {
+  private readonly meta: IProjectMeta;
   private nodeCache = new WeakMap<INode, AnalysisContext>();
+
+  constructor(meta: IProjectMeta) {
+    this.meta = meta;
+  }
 
   analyzeNode(node: INode): AnalysisContext {
     const cached = this.nodeCache.get(node);
     if (cached) return cached;
 
     node.root = true;
-    const ctx = new AnalysisContext(node);
+    node.meta = this.meta[node.language] ?? {};
+    const ctx = new AnalysisContext(node, this.meta);
     node.analyze(ctx);
 
     this.nodeCache.set(node, ctx);
