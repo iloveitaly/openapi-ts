@@ -2,4 +2,4 @@
 "@hey-api/shared": patch
 ---
 
-**utils**: expose `SymbolFactory`
+**symbol**: add implicit priority
