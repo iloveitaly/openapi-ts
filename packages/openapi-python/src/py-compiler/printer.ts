@@ -77,8 +77,8 @@ export function createPrinter(options?: PyPrinterOptions) {
     if (lines.length === 1) {
       parts.push(printLine(`"""${lines[0]}"""`), '');
     } else {
-      parts.push(printLine(`"""`));
-      parts.push(...lines.map((line) => printLine(line)));
+      parts.push(printLine(`"""${lines[0]}`));
+      parts.push(...lines.slice(1).map((line) => printLine(line)));
       parts.push(printLine(`"""`), '');
     }
     return parts;
@@ -349,7 +349,16 @@ export function createPrinter(options?: PyPrinterOptions) {
 
       case PyNodeKind.Literal:
         if (typeof node.value === 'string') {
-          parts.push(createStringLiteral(node.value));
+          if (node.value.includes('\n')) {
+            const { quote } = selectQuote(node.value);
+            const tripleQuote = quote.repeat(3);
+            const escaped = node.value
+              .replaceAll('\\', '\\\\')
+              .replaceAll(tripleQuote, `\\${quote}${quote}${quote}`);
+            parts.push(`${tripleQuote}${escaped}${tripleQuote}`);
+          } else {
+            parts.push(createStringLiteral(node.value));
+          }
         } else if (typeof node.value === 'boolean') {
           parts.push(node.value ? 'True' : 'False');
         } else if (node.value === null) {
