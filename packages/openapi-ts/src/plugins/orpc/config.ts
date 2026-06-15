@@ -2,6 +2,7 @@ import type { PluginContext } from '@hey-api/shared';
 import { coerce, definePluginConfig } from '@hey-api/shared';
 
 import type { UserContractsConfig } from './contracts';
+import { orpcImports } from './imports';
 import { handler } from './plugin';
 import type { Config, OrpcPlugin } from './types';
 
@@ -83,7 +84,13 @@ export const defaultConfig: OrpcPlugin['Config'] = {
     },
   },
   handler,
+  imports: orpcImports,
   name: 'orpc',
+  symbolMeta() {
+    return {
+      artifact: 'orpc',
+    };
+  },
 };
 
 /**

@@ -1,7 +1,7 @@
 import { definePluginConfig } from '@hey-api/shared';
 
+import { pydanticImports } from './imports';
 import { handler } from './plugin';
-import { pydanticSymbols } from './symbols';
 import type { PydanticPlugin } from './types';
 
 export const defaultConfig: PydanticPlugin['Config'] = {
@@ -80,8 +80,13 @@ export const defaultConfig: PydanticPlugin['Config'] = {
     },
   },
   handler,
+  imports: pydanticImports,
   name: 'pydantic',
-  symbols: pydanticSymbols,
+  symbolMeta() {
+    return {
+      artifact: 'pydantic',
+    };
+  },
   tags: ['validator'],
 };
 

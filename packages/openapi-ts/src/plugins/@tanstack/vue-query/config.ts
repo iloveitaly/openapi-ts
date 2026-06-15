@@ -1,7 +1,7 @@
 import { definePluginConfig } from '@hey-api/shared';
 
 import { handler } from '../../../plugins/@tanstack/query-core/plugin';
-import { tanStackQuerySymbols } from '../query-core/symbols';
+import { tanStackQueryImports } from '../query-core/imports';
 import type { TanStackVueQueryPlugin } from './types';
 
 const defaultMeta = (): Record<string, unknown> => ({});
@@ -87,8 +87,13 @@ export const defaultConfig: TanStackVueQueryPlugin['Config'] = {
   },
   dependencies: ['@hey-api/sdk', '@hey-api/typescript'],
   handler,
+  imports: tanStackQueryImports,
   name: '@tanstack/vue-query',
-  symbols: tanStackQuerySymbols,
+  symbolMeta() {
+    return {
+      artifact: '@tanstack/vue-query',
+    };
+  },
 };
 
 /**

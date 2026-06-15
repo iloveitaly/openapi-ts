@@ -31,18 +31,18 @@ export function operationOptionsType({
 
   const symbolDataType = isDataAllowed
     ? plugin.querySymbol({
+        artifact: 'types',
         category: 'type',
         resource: 'operation',
         resourceId: operation.id,
         role: 'data',
-        tool: 'typescript',
       })
     : undefined;
 
   const symbolOptions = plugin.referenceSymbol({
+    artifact: 'sdk',
     category: 'type',
     resource: 'client-options',
-    tool: 'sdk',
   });
 
   if (isNuxtClient) {
@@ -253,7 +253,7 @@ export function operationStatements({
 
     switch (operation.body.type) {
       case 'form-data': {
-        const symbol = plugin.symbols.formDataBodySerializer;
+        const symbol = plugin.imports.formDataBodySerializer;
         reqOptions.spread(symbol);
         break;
       }
@@ -270,7 +270,7 @@ export function operationStatements({
         reqOptions.prop('bodySerializer', $.literal(null));
         break;
       case 'url-search-params': {
-        const symbol = plugin.symbols.urlSearchParamsBodySerializer;
+        const symbol = plugin.imports.urlSearchParamsBodySerializer;
         reqOptions.spread(symbol);
         break;
       }
@@ -406,7 +406,7 @@ export function operationStatements({
       }
       config.push(shape);
     }
-    const symbol = plugin.symbols.buildClientParams;
+    const symbol = plugin.imports.buildClientParams;
     statements.push(
       $.const('params').assign(
         $(symbol).call($.array(...args), $.array($.object().prop('args', $.array(...config)))),
@@ -503,8 +503,8 @@ export function operationReturnType({
       role,
     }) ?? 'unknown';
 
-  const requestResult = $.type(plugin.symbols.RequestResult);
-  const sseResult = $.type(plugin.symbols.ServerSentEventsResult);
+  const requestResult = $.type(plugin.imports.RequestResult);
+  const sseResult = $.type(plugin.imports.ServerSentEventsResult);
 
   if (isNuxt) {
     const inner = requestResult

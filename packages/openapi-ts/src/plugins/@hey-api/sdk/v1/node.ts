@@ -48,10 +48,10 @@ function attachComment<T extends ReturnType<typeof $.var | typeof $.method>>(arg
 
 function createShellMeta(node: StructureNode): SymbolMeta {
   return {
+    artifact: 'sdk',
     category: 'utility',
     resource: 'class',
     resourceId: node.getPath().join('.'),
-    tool: 'sdk',
   };
 }
 
@@ -68,7 +68,6 @@ function createFnSymbol(
       resource: 'operation',
       resourceId: operation.id,
       tags,
-      tool: 'sdk',
     },
   });
 }
@@ -132,16 +131,16 @@ export function createShell(plugin: HeyApiSdkPlugin['Instance']): StructureShell
         .$if(isInstance(plugin), (c) =>
           c.extends(
             plugin.referenceSymbol({
+              artifact: 'sdk',
               category: 'utility',
               resource: 'class',
               resourceId: 'HeyApiClient',
-              tool: 'sdk',
             }),
           ),
         )
         .$if(isAngularClient && node.isRoot, (c) =>
           c.decorator(
-            plugin.symbols.angular.Injectable,
+            plugin.imports.angular.Injectable,
             $.object().prop('providedIn', $.literal('root')),
           ),
         );
@@ -174,7 +173,6 @@ function enrichRootClass(args: {
       category: 'utility',
       resource: 'class',
       resourceId: 'HeyApiClient',
-      tool: 'sdk',
     },
   });
   dependencies.push(createClientClass({ plugin, symbol: symbolClient }));
@@ -183,7 +181,6 @@ function enrichRootClass(args: {
       category: 'utility',
       resource: 'class',
       resourceId: 'HeyApiRegistry',
-      tool: 'sdk',
     },
   });
   dependencies.push(
@@ -215,7 +212,7 @@ function enrichRootClass(args: {
           p.required(isClientRequired).type(
             $.type
               .object()
-              .prop('client', (p) => p.required(isClientRequired).type(plugin.symbols.Client))
+              .prop('client', (p) => p.required(isClientRequired).type(plugin.imports.Client))
               .prop('key', (p) => p.optional().type('string')),
           ),
         )
@@ -288,7 +285,7 @@ function implementFn<T extends ReturnType<typeof $.func | typeof $.method>>(args
       (m) =>
         m
           .generic(nuxtTypeComposable, (t) =>
-            t.extends(plugin.symbols.Composable).default($.type.literal('$fetch')),
+            t.extends(plugin.imports.Composable).default($.type.literal('$fetch')),
           )
           .generic(nuxtTypeDefault, (t) =>
             t.$if(

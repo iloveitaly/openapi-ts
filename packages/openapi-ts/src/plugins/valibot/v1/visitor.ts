@@ -42,7 +42,7 @@ export function createVisitor(
 ): SchemaVisitor<ValibotResult, ValibotPlugin['Instance']> {
   const { plugin, schemaExtractor } = config;
 
-  const v = plugin.symbols.v;
+  const v = plugin.imports.v;
 
   function applyModifiers(
     result: ValibotResult,
@@ -252,10 +252,10 @@ export function createVisitor(
     },
     reference($ref, schema) {
       const query: SymbolMeta = {
+        artifact: 'valibot',
         category: 'schema',
         resource: 'definition',
         resourceId: $ref,
-        tool: 'valibot',
       };
 
       const refSymbol = plugin.referenceSymbol(query);

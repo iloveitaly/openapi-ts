@@ -20,7 +20,7 @@ export function exportAst({
   final: ZodFinal;
   meta?: Record<string, unknown>;
 }): Symbol {
-  const z = plugin.symbols.z;
+  const z = plugin.imports.z;
 
   const name = pathToName(path, { anchor: namingAnchor });
 
@@ -30,7 +30,6 @@ export function exportAst({
         category: 'schema',
         path,
         tags,
-        tool: 'zod',
         ...meta,
       },
       name,
@@ -55,7 +54,6 @@ export function exportAst({
             category: 'type',
             path,
             tags,
-            tool: 'zod',
             variant: 'infer',
             ...meta,
           },
@@ -83,7 +81,6 @@ export function exportAst({
             category: 'type',
             path,
             tags,
-            tool: 'zod',
             variant: 'input',
             ...meta,
           },
@@ -111,7 +108,6 @@ export function exportAst({
             category: 'type',
             path,
             tags,
-            tool: 'zod',
             variant: 'output',
             ...meta,
           },

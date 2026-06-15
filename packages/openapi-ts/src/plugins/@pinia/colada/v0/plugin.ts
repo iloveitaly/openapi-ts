@@ -1,28 +1,8 @@
-import { createMutationOptions } from '../mutationOptions';
-import { createQueryOptions } from '../queryOptions';
+import { createMutationOptions } from '../mutation-options';
+import { createQueryOptions } from '../query-options';
 import type { PiniaColadaPlugin } from '../types';
 
 export const handlerV0: PiniaColadaPlugin['Handler'] = ({ plugin }) => {
-  plugin.symbol('defineQueryOptions', {
-    external: plugin.name,
-  });
-  plugin.symbol('UseMutationOptions', {
-    external: plugin.name,
-    kind: 'type',
-  });
-  plugin.symbol('UseQueryOptions', {
-    external: plugin.name,
-    kind: 'type',
-  });
-  plugin.symbol('_JSONValue', {
-    external: plugin.name,
-    kind: 'type',
-  });
-  plugin.symbol('AxiosError', {
-    external: 'axios',
-    kind: 'type',
-  });
-
   plugin.forEach(
     'operation',
     ({ operation }) => {

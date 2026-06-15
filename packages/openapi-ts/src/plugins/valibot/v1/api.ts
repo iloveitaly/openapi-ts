@@ -55,11 +55,11 @@ function compositeNode(ctx: RequestValidatorResolverContext): Pipe | undefined {
     const layer = resolveValidatorLayer(ctx.layers, key, defaultValues);
 
     const layerSchema = ctx.plugin.querySymbol({
+      artifact: 'valibot',
       category: 'schema',
       resource: 'operation',
       resourceId: ctx.operation.id,
       role: `request-${key}`,
-      tool: 'valibot',
     });
 
     if (layerSchema) {
@@ -142,7 +142,7 @@ function createRequestSchemaContext(
   ctx: RequestSchemaContext<ValibotPlugin['Instance']>,
 ): RequestValidatorResolverContext {
   const { plugin } = ctx;
-  const v = plugin.symbols.v;
+  const v = plugin.imports.v;
 
   return {
     ...ctx,
@@ -216,15 +216,15 @@ export function createResponseValidatorV1({
   plugin,
 }: ValidatorArgs): ArrowFunc | undefined {
   const symbol = plugin.querySymbol({
+    artifact: 'valibot',
     category: 'schema',
     resource: 'operation',
     resourceId: operation.id,
     role: 'responses',
-    tool: 'valibot',
   });
   if (!symbol) return;
 
-  const v = plugin.symbols.v;
+  const v = plugin.imports.v;
   const resolverCtx: ResponseValidatorResolverContext = {
     $,
     operation,

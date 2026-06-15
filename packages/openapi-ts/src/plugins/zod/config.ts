@@ -2,8 +2,8 @@ import { coerce, definePluginConfig, type PluginContext } from '@hey-api/shared'
 import colors from 'ansi-colors';
 
 import { Api } from './api';
+import { zodImports } from './imports';
 import { handler } from './plugin';
-import { zodSymbols } from './symbols';
 import type { ZodPlugin } from './types';
 
 type CompatibilityVersion = NonNullable<ZodPlugin['Types']['config']['compatibilityVersion']>;
@@ -322,8 +322,13 @@ export const defaultConfig: ZodPlugin['Config'] = {
     },
   },
   handler,
+  imports: zodImports,
   name: 'zod',
-  symbols: zodSymbols,
+  symbolMeta() {
+    return {
+      artifact: 'zod',
+    };
+  },
   tags: ['transformer', 'validator'],
 };
 

@@ -36,41 +36,41 @@ function attachComment<T extends ReturnType<typeof $.var | typeof $.method>>(arg
 
 function createHttpRequestFnMeta(operation: IR.OperationObject): SymbolMeta {
   return {
+    artifact: '@angular/common',
     category: 'utility',
     resource: 'operation',
     resourceId: operation.id,
     role: 'request',
-    tool: 'angular',
   };
 }
 
 function createHttpRequestShellMeta(node: StructureNode): SymbolMeta {
   return {
+    artifact: '@angular/common',
     category: 'utility',
     resource: 'shell',
     resourceId: node.getPath().join('.'),
     role: 'request',
-    tool: 'angular',
   };
 }
 
 function createHttpResourceFnMeta(operation: IR.OperationObject): SymbolMeta {
   return {
+    artifact: '@angular/common',
     category: 'utility',
     resource: 'operation',
     resourceId: operation.id,
     role: 'resource',
-    tool: 'angular',
   };
 }
 
 function createHttpResourceShellMeta(node: StructureNode): SymbolMeta {
   return {
+    artifact: '@angular/common',
     category: 'utility',
     resource: 'shell',
     resourceId: node.getPath().join('.'),
     role: 'resource',
-    tool: 'angular',
   };
 }
 
@@ -136,8 +136,6 @@ export function createHttpRequestShell(plugin: AngularCommonPlugin['Instance']):
   const client = getClientPlugin(getTypedConfig(plugin));
   const isAngularClient = client.name === '@hey-api/client-angular';
 
-  const symbolInjectable = plugin.external('@angular/core.Injectable');
-
   return {
     define: (node) => {
       const symbol = plugin.symbol(
@@ -155,7 +153,7 @@ export function createHttpRequestShell(plugin: AngularCommonPlugin['Instance']):
       const c = $.class(symbol)
         .export()
         .$if(isAngularClient && node.isRoot, (c) =>
-          c.decorator(symbolInjectable, $.object().prop('providedIn', $.literal('root'))),
+          c.decorator(plugin.imports.Injectable, $.object().prop('providedIn', $.literal('root'))),
         );
 
       return { dependencies: [], node: c };
@@ -166,8 +164,6 @@ export function createHttpRequestShell(plugin: AngularCommonPlugin['Instance']):
 export function createHttpResourceShell(plugin: AngularCommonPlugin['Instance']): StructureShell {
   const client = getClientPlugin(getTypedConfig(plugin));
   const isAngularClient = client.name === '@hey-api/client-angular';
-
-  const symbolInjectable = plugin.external('@angular/core.Injectable');
 
   return {
     define: (node) => {
@@ -186,7 +182,7 @@ export function createHttpResourceShell(plugin: AngularCommonPlugin['Instance'])
       const c = $.class(symbol)
         .export()
         .$if(isAngularClient && node.isRoot, (c) =>
-          c.decorator(symbolInjectable, $.object().prop('providedIn', $.literal('root'))),
+          c.decorator(plugin.imports.Injectable, $.object().prop('providedIn', $.literal('root'))),
         );
 
       return { dependencies: [], node: c };
@@ -205,19 +201,18 @@ function implementHttpRequestFn<T extends ReturnType<typeof $.func | typeof $.me
     operation,
   });
 
-  const symbolHttpRequest = plugin.external('@angular/common/http.HttpRequest');
   const symbolClient = plugin.querySymbol({ category: 'client' });
   const symbolOptions = plugin.referenceSymbol({
+    artifact: 'sdk',
     category: 'type',
     resource: 'client-options',
-    tool: 'sdk',
   });
   const symbolDataType = plugin.querySymbol({
+    artifact: 'types',
     category: 'type',
     resource: 'operation',
     resourceId: operation.id,
     role: 'data',
-    tool: 'typescript',
   });
   const symbolResponseType = plugin.querySymbol({
     category: 'type',
@@ -235,7 +230,7 @@ function implementHttpRequestFn<T extends ReturnType<typeof $.func | typeof $.me
       ),
     )
     .generic('ThrowOnError', (g) => g.extends('boolean').default(false))
-    .returns($.type(symbolHttpRequest).generic(symbolResponseType ?? 'unknown'))
+    .returns($.type(plugin.imports.HttpRequest).generic(symbolResponseType ?? 'unknown'))
     .do(
       $.return(
         $('options')
@@ -267,19 +262,17 @@ function implementHttpResourceFn<T extends ReturnType<typeof $.func | typeof $.m
     operation,
   });
 
-  const symbolHttpResource = plugin.external('@angular/common/http.httpResource');
-  const symbolInject = plugin.external('@angular/core.inject');
   const symbolOptions = plugin.referenceSymbol({
+    artifact: 'sdk',
     category: 'type',
     resource: 'client-options',
-    tool: 'sdk',
   });
   const symbolDataType = plugin.querySymbol({
+    artifact: 'types',
     category: 'type',
     resource: 'operation',
     resourceId: operation.id,
     role: 'data',
-    tool: 'typescript',
   });
   const symbolResponseType = plugin.querySymbol({
     category: 'type',
@@ -304,7 +297,7 @@ function implementHttpResourceFn<T extends ReturnType<typeof $.func | typeof $.m
     .generic('ThrowOnError', (g) => g.extends('boolean').default(false))
     .do(
       $.return(
-        $(symbolHttpResource)
+        $(plugin.imports.httpResource)
           .call(
             $.func().do(
               $.const('opts').assign(
@@ -319,7 +312,7 @@ function implementHttpResourceFn<T extends ReturnType<typeof $.func | typeof $.m
                           transform: (node, index) =>
                             index === 0
                               ? node['~dsl'] === 'ClassTsDsl'
-                                ? $(symbolInject).call($(node.name))
+                                ? $(plugin.imports.inject).call($(node.name))
                                 : $(node.name)
                               : node,
                         })

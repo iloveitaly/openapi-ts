@@ -41,7 +41,7 @@ export function createVisitor(
 ): SchemaVisitor<ZodResult, ZodPlugin['Instance']> {
   const { plugin, schemaExtractor } = config;
 
-  const z = plugin.symbols.z;
+  const z = plugin.imports.z;
 
   return {
     applyModifiers(result, ctx, options = {}): ZodFinal {
@@ -238,10 +238,10 @@ export function createVisitor(
     },
     reference($ref, schema) {
       const query: SymbolMeta = {
+        artifact: 'zod',
         category: 'schema',
         resource: 'definition',
         resourceId: $ref,
-        tool: 'zod',
       };
 
       const refSymbol = plugin.referenceSymbol(query);

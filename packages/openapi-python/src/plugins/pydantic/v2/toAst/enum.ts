@@ -60,14 +60,14 @@ function baseNode(ctx: EnumResolverContext): PydanticType {
 
   if (!enumMembers.length) {
     return {
-      type: $$.constrainedType(plugin.symbols.typing.Any),
+      type: $$.constrainedType(plugin.imports.typing.Any),
     };
   }
 
   const mode = plugin.config.enums ?? 'enum';
 
   if (mode === 'literal') {
-    const literal = plugin.symbols.typing.Literal;
+    const literal = plugin.imports.typing.Literal;
     const values = enumMembers.map((m) =>
       // TODO: replace
       typeof m.value === 'string' ? `"<<<<${m.value}"` : `<<<${m.value}`,
@@ -79,10 +79,10 @@ function baseNode(ctx: EnumResolverContext): PydanticType {
   }
 
   const refSymbol = plugin.referenceSymbol({
+    artifact: 'pydantic',
     category: 'schema',
     resource: 'definition',
     resourceId: pathToJsonPointer(fromRef(ctx.path)),
-    tool: 'pydantic',
   });
 
   return {

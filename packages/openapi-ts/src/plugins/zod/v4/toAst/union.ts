@@ -11,7 +11,7 @@ import type { ZodResult } from '../../shared/types';
 
 function baseNode(ctx: UnionResolverContext): Chain {
   const { childResults, parentSchema, plugin, schemas } = ctx;
-  const { z } = plugin.symbols;
+  const { z } = plugin.imports;
 
   if (!childResults.length) {
     return $(z).attr(identifiers.null).call();
@@ -49,10 +49,10 @@ function baseNode(ctx: UnionResolverContext): Chain {
     if (!shouldFallBackToUnion({ childResults, parentSchema, plugin, schemas })) {
       const unionMembers = discriminatedData.members.map((member) => {
         const query: SymbolMeta = {
+          artifact: 'zod',
           category: 'schema',
           resource: 'definition',
           resourceId: member.ref,
-          tool: 'zod',
         };
         const refExpr = $(plugin.referenceSymbol(query));
         return member.needsExtend
@@ -137,7 +137,7 @@ export function unionToAst({
   chain: Chain;
   childResults: Array<ZodResult>;
 } {
-  const z = plugin.symbols.z;
+  const z = plugin.imports.z;
 
   const ctx: UnionResolverContext = {
     $,

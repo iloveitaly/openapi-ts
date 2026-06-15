@@ -1,6 +1,7 @@
 import { definePluginConfig } from '@hey-api/shared';
 
 import { Api } from './api';
+import { arktypeImports } from './imports';
 import { handler } from './plugin';
 import type { ArktypePlugin } from './types';
 
@@ -92,7 +93,13 @@ export const defaultConfig: ArktypePlugin['Config'] = {
     },
   },
   handler,
+  imports: arktypeImports,
   name: 'arktype',
+  symbolMeta() {
+    return {
+      artifact: 'arktype',
+    };
+  },
   tags: ['validator'],
 };
 

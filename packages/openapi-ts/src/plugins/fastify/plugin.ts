@@ -4,21 +4,21 @@ import { hasParameterGroupObjectRequired, operationResponsesMap } from '@hey-api
 import { $ } from '../../ts-dsl';
 import type { FastifyPlugin } from './types';
 
-const operationToRouteHandler = ({
+function operationToRouteHandler({
   operation,
   plugin,
 }: {
   operation: IR.OperationObject;
   plugin: FastifyPlugin['Instance'];
-}) => {
+}) {
   const type = $.type.object();
 
   const symbolDataType = plugin.querySymbol({
+    artifact: 'types',
     category: 'type',
     resource: 'operation',
     resourceId: operation.id,
     role: 'data',
-    tool: 'typescript',
   });
   if (symbolDataType) {
     if (operation.body) {
@@ -111,28 +111,13 @@ const operationToRouteHandler = ({
     return;
   }
 
-  const symbolRouteHandler = plugin.referenceSymbol({
-    category: 'type',
-    resource: 'route-handler',
-    tool: 'fastify',
-  });
   return {
     name: operation.id,
-    type: $.type(symbolRouteHandler, (t) => t.generic(type)),
+    type: $.type(plugin.imports.RouteHandler, (t) => t.generic(type)),
   };
-};
+}
 
 export const handler: FastifyPlugin['Handler'] = ({ plugin }) => {
-  plugin.symbol('RouteHandler', {
-    external: 'fastify',
-    kind: 'type',
-    meta: {
-      category: 'type',
-      resource: 'route-handler',
-      tool: 'fastify',
-    },
-  });
-
   const symbolRouteHandlers = plugin.symbol('RouteHandlers');
 
   const type = $.type.object();

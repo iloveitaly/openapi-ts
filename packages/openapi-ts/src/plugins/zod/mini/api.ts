@@ -55,11 +55,11 @@ function compositeNode(ctx: RequestValidatorResolverContext): Chain | undefined 
     const layer = resolveValidatorLayer(ctx.layers, key, defaultValues);
 
     const layerSchema = ctx.plugin.querySymbol({
+      artifact: 'zod',
       category: 'schema',
       resource: 'operation',
       resourceId: ctx.operation.id,
       role: `request-${key}`,
-      tool: 'zod',
     });
 
     if (layerSchema) {
@@ -142,7 +142,7 @@ function createRequestSchemaContext(
   ctx: RequestSchemaContext<ZodPlugin['Instance']>,
 ): RequestValidatorResolverContext {
   const { plugin } = ctx;
-  const z = plugin.symbols.z;
+  const z = plugin.imports.z;
 
   return {
     ...ctx,
@@ -215,15 +215,15 @@ export function createResponseValidatorMini({
   plugin,
 }: ValidatorArgs): ArrowFunc | undefined {
   const symbol = plugin.querySymbol({
+    artifact: 'zod',
     category: 'schema',
     resource: 'operation',
     resourceId: operation.id,
     role: 'responses',
-    tool: 'zod',
   });
   if (!symbol) return;
 
-  const z = plugin.symbols.z;
+  const z = plugin.imports.z;
   const resolverCtx: ResponseValidatorResolverContext = {
     $,
     chain: {
