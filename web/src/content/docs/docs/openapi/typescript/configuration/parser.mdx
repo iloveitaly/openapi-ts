@@ -49,7 +49,7 @@ export default {
 ## Validate
 
 :::caution
-The validator feature is very limited. You can help improve it by submitting more [use cases](https://github.com/hey-api/openapi-ts/issues/1970#issuecomment-2933189789).
+The validator feature is very limited. You can help improve it by submitting more [use cases](https://github.com/hey-api/hey-api/issues/1970#issuecomment-2933189789).
 :::
 
 If you don't control or trust your input, you might want to validate it. Any detected errors in your input will exit `@hey-api/openapi-ts` and no plugins will be executed.
@@ -552,7 +552,7 @@ export default {
 
 ## Hooks
 
-Hooks affect runtime behavior but aren't tied to any single plugin. They can be configured globally via `hooks` or per plugin through the `~hooks` property.
+Hooks affect runtime behavior but aren't tied to any single plugin. They can be configured globally via `hooks` or per plugin through the `$hooks` property.
 
 <Tabs>
   <TabItem label="parser">
@@ -574,7 +574,7 @@ export default {
   plugins: [
     {
       name: '@tanstack/react-query',
-      '~hooks': {}, // configure plugin hooks
+      $hooks: {}, // configure plugin hooks
     },
   ],
 };
@@ -726,7 +726,7 @@ export default {
     {
       enums: 'javascript',
       name: '@hey-api/typescript',
-      '~hooks': {
+      $hooks: {
         symbols: {
           getName({ meta, name, schema }) {
             if (schema?.type === 'enum' && meta.category === 'type') {
