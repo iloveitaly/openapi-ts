@@ -1,7 +1,9 @@
 export { ANGULAR } from './angular';
 export { ARKTYPE } from './arktype';
 export { AXIOS } from './axios';
+export { FAKER } from './faker';
 export { FASTIFY } from './fastify';
+export { MSW } from './msw';
 export { ORPC_CONTRACT } from './orpc-contract';
 export { PINIA_COLADA } from './pinia-colada';
 export { SWR } from './swr';

@@ -1,0 +1,26 @@
+---
+import { GITHUB_URL } from '@/data/constants';
+
+interface Props {
+  folder?: string;
+  package?: string;
+  plugin?: string;
+}
+
+const { folder, package: packageName, plugin } = Astro.props;
+
+let srcPath: string;
+if (folder) {
+  srcPath = `src/${folder}/types.ts`;
+} else if (plugin) {
+  srcPath = `src/plugins/${plugin}/types.ts`;
+} else {
+  throw new Error('UserConfig component could not determine the source path. Please provide either a folder or a plugin prop.');
+}
+---
+
+<h2>API</h2>
+
+<p>
+  You can view the complete list of options in the <a href={`${GITHUB_URL}/blob/main/packages/${packageName}/${srcPath}`}>UserConfig</a> interface.
+</p>

@@ -13,6 +13,11 @@ export const presets = {
     /** Just the client */
     plugins.clientAxios(),
   ],
+  fake: () => [
+    /** Just the faker */
+    plugins.typescript(),
+    plugins.faker(),
+  ],
   full: () => [
     /** Full kitchen sink for comprehensive testing */
     plugins.typescript(),
@@ -30,6 +35,11 @@ export const presets = {
         tags: true,
       },
     }),
+  ],
+  msw: () => [
+    /** SDK + MSW handlers */
+    plugins.sdk(),
+    plugins.msw(),
   ],
   none: () => [
     /** No plugins at all */
